@@ -16,6 +16,7 @@ module Grape
         @app_response['X-RateLimit-Limit']     = context.route_setting(:throttle)[:max].to_s
         @app_response['X-RateLimit-Remaining'] = context.route_setting(:throttle)[:remaining].to_s
         @app_response['X-RateLimit-Reset']     = context.route_setting(:throttle)[:per].from_now.to_i.to_s
+        @app_response
       end
 
     end
