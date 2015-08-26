@@ -1,3 +1,5 @@
+[![Code Climate](https://codeclimate.com/github/gottfrois/grape-attack/badges/gpa.svg)](https://codeclimate.com/github/gottfrois/grape-attack)
+
 # Grape::Attack
 
 A middleware for Grape to add endpoint-specific throttling.
