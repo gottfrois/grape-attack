@@ -1,4 +1,3 @@
-require 'grape/attack/adapters/redis'
 require 'grape/attack/request'
 require 'grape/attack/counter'
 
@@ -8,13 +7,16 @@ module Grape
 
       attr_reader :request, :adapter, :counter
 
-      def initialize(env, adapter = ::Grape::Attack::Adapters::Redis.new)
+      def initialize(env, adapter = ::Grape::Attack.config.adapter)
         @request = ::Grape::Attack::Request.new(env)
         @adapter = adapter
         @counter = ::Grape::Attack::Counter.new(@request, @adapter)
       end
 
       def call!
+        return if disable?
+        return unless throttle?
+
         if allowed?
           update_counter
           set_rate_limit_headers
@@ -24,6 +26,14 @@ module Grape
       end
 
       private
+
+      def disable?
+        ::Grape::Attack.config.disable.call
+      end
+
+      def throttle?
+        request.throttle?
+      end
 
       def allowed?
         counter.value < max_requests_allowed
