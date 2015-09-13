@@ -4,6 +4,14 @@
 
 A middleware for Grape to add endpoint-specific throttling.
 
+## Why
+
+You are probably familiar with [Rack::Attack](https://github.com/kickstarter/rack-attack) which does a great job. Grape::Attack was built with simplicity in mind. It was also built to be used directly in [Grape](https://github.com/ruby-grape/grape) APIs without any special configurations.
+
+It comes with a little DSL that allows you to protect your Grape API endpoints. It also automaticaly sets custom HTTP headers to let your clients know how much requests they have left.
+
+If you need more advanced feature like black and white listing, you should probably use [Rack::Attack](https://github.com/kickstarter/rack-attack). But if you simply want to do API throttling for each of your Grape endpoints, go ahead and continue reading.
+
 ## Installation
 
 Add this line to your application's Gemfile:
