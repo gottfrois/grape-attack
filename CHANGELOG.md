@@ -1,4 +1,4 @@
-# 0.1.2
+# 0.2.0
 
 * `identifier` proc now gets called in `Grape::Attack::Request` context so that you have access to helper methods
 such as `params` and Grape endpoint object.
