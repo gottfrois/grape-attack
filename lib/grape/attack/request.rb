@@ -25,6 +25,14 @@ module Grape
         request.route_params
       end
 
+      def method_missing(method_name, *args, &block)
+        context.public_send(method_name, *args, &block)
+      end
+
+      def respond_to_missing?(method_name, include_private = false)
+        context.respond_to?(method_name)
+      end
+
       def client_identifier
         self.instance_eval(&throttle_options.identifier) || env['HTTP_X_REAL_IP'] || env['REMOTE_ADDR']
       end
