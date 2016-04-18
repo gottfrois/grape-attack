@@ -18,6 +18,7 @@ module Grape
   module Attack
     module Adapters
       autoload :Redis, 'grape/attack/adapters/redis'
+      autoload :RailsCacheDalliStore, 'grape/attack/adapters/rails_cache_dalli_store'
     end
   end
 end
