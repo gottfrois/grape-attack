@@ -28,7 +28,11 @@ module Grape
       private
 
       def key
-        "#{request.method}:#{request.path}:#{request.client_identifier}"
+        if request.throttle_options.global_throttling
+          "#{request.client_identifier}"
+        else
+          "#{request.method}:#{request.path}:#{request.client_identifier}"
+        end
       end
 
       def ttl_in_seconds

@@ -17,9 +17,9 @@ module Grape
         return if ::Grape::Attack.config.disable.call
         return unless request.throttle?
 
-        @app_response['X-RateLimit-Limit']     = request.context.route_setting(:throttle)[:max].to_s
-        @app_response['X-RateLimit-Remaining'] = request.context.route_setting(:throttle)[:remaining].to_s
-        @app_response['X-RateLimit-Reset']     = request.context.route_setting(:throttle)[:per].from_now.to_i.to_s
+        @app_response['X-RateLimit-Limit']     = request.throttle_options.max.to_s
+        @app_response['X-RateLimit-Remaining'] = request.throttle_options.remaining.to_s
+        @app_response['X-RateLimit-Reset']     = request.throttle_options.per.from_now.to_i.to_s
         @app_response
       end
 
