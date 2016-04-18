@@ -1,4 +1,8 @@
-require 'redis-namespace'
+begin
+   require 'redis-namespace'
+rescue LoadError => e
+   raise LoadError, "You are using functionality requiring the optional gem dependency `redis-namespace`, but the gem is not loaded. Add `gem 'redis-namespace'` to your Gemfile."
+end
 
 module Grape
   module Attack
