@@ -58,6 +58,8 @@ end
 
 Use any [ActiveSupport Time extension to Numeric](http://edgeguides.rubyonrails.org/active_support_core_extensions.html#time) object.
 
+---
+
 By default it will use the request ip address to identity the client making the request.
 You can pass your own identifier using a `Proc`:
 
@@ -82,6 +84,36 @@ class MyApi < Grape::API
   end
 end
 ```
+
+---
+
+By default requests to each endpoint's methods will be counted separately, if you would like the requests to the method to be counted for and checked against a global total, you can specify `global_throttling: true`. When `global_throttling` is set to true, `max` and `per` are ignored on the endpoint and instead, `global_throttling_max`, and `global_throttling_per` from the [configuration](#configuration) are looked at.
+
+> `global_throttling` can also be set to true in the [Grape::Attack configuration](#configuration).
+
+```ruby
+class MyApi < Grape::API
+
+  use Grape::Attack::Throttle
+
+  helpers do
+    def current_user
+      @current_user ||= User.authorize!(env)
+    end
+  end
+
+  resources :comments do
+
+    throttle global_throttling: true
+    get do
+      Comment.all
+    end
+
+  end
+end
+```
+
+---
 
 When rate limit is reached, it will raise `Grape::Attack::RateLimitExceededError` exception.
 You can catch the exception using `rescue_from`:
@@ -115,6 +147,8 @@ Content-Type: application/json
 {"message":"API rate limit exceeded for xxx.xxx.xxx.xxx."}
 ```
 
+---
+
 Finally the following headers will automatically be set:
 
 * `X-RateLimit-Limit` -- The maximum number of requests that the consumer is permitted to make per specified period.
@@ -127,6 +161,21 @@ Adapters are used to store the rate counter.
 Currently there is only a Redis adapter. You can set redis client url through `env['REDIS_URL']` varialble.
 
 Defaults to `redis://localhost:6379/0`.
+
+## Configuration
+
+If you wish to set a different [adapter](#adapters) or provide configuration options for `global_throttling`, you can configure `Grape::Attack` in a Rails initializer.
+
+```ruby
+# config/initializers/grape_attack.rb
+
+Grape::Attack.configure do |c|
+  c.adapter = Grape::Attack::Adapters::Memory.new  # defaults to Grape::Attack::Adapters::Redis.new
+  c.global_throttling = true                       # defaults to false
+  c.global_throttling_max = 1000                   # defaults to 500
+  c.global_throttling_per = 1.day                  # defaults to 1.day
+end     
+```
 
 ## Development
 
@@ -142,4 +191,3 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/[USERN
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-
