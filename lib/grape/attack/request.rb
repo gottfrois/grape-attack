@@ -14,15 +14,15 @@ module Grape
       end
 
       def method
-        request.route_method
+        request.request_method
       end
 
       def path
-        request.route_path
+        request.path
       end
 
       def params
-        request.route_params
+        request.params
       end
 
       def method_missing(method_name, *args, &block)

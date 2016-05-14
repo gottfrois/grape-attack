@@ -1,4 +1,6 @@
 require 'active_support/core_ext/numeric/time.rb'
+require 'grape'
+
 require 'grape/attack/version'
 require 'grape/attack/adapters/redis'
 require 'grape/attack/adapters/memory'

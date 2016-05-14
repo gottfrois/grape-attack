@@ -43,8 +43,6 @@ module Grape
         counter.update
       end
 
-      # Fix when https://github.com/ruby-grape/grape/issues/1069
-      # For now we use route_setting to store :remaining value.
       def set_rate_limit_headers
         request.context.route_setting(:throttle)[:remaining] = [0, max_requests_allowed - (counter.value + 1)].max
       end
