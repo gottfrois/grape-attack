@@ -5,7 +5,7 @@ module Grape
       attr_accessor :adapter, :disable
 
       def initialize
-        @adapter = ::Grape::Attack::Adapters::CacheMemoryStore.new
+        @adapter = :Memory
         @disable = Proc.new { false }
       end
 

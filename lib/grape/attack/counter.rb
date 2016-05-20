@@ -11,18 +11,24 @@ module Grape
 
       def value
         @value ||= begin
-          adapter.get(key).to_i
-        rescue ::Grape::Attack::StoreError
-          1
+          if adapter.key?(key)
+            adapter.fetch(key).to_i
+          else
+            # Should store it as a string so increment can be performed
+            adapter.store(key, '0', expires: ttl_in_seconds)
+            0
+          end
         end
       end
 
       def update
-        adapter.atomically do
-          adapter.incr(key)
-          adapter.expire(key, ttl_in_seconds)
+        if adapter.supports?(:increment)
+          adapter.increment(key)
+        else
+          # Not concerned with storing as a string as increment will never be called
+          adapter.store(key, value + 1, expires: ttl_in_seconds)
         end
-      rescue ::Grape::Attack::StoreError
+        remove_instance_variable(:@value)
       end
 
       private
