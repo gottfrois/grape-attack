@@ -9,10 +9,5 @@ require 'grape/attack/throttle'
 module Grape
   module Attack
     extend Configurable
-
-    private
-    def adapter
-      @adapter ||= Moneta.new(config.adapter).raw
-    end
   end
 end

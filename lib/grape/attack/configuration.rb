@@ -9,6 +9,9 @@ module Grape
         @disable = Proc.new { false }
       end
 
+      def moneta_adapter
+        @moneta_adapter ||= Moneta.new(adapter, expires: true, serializer: :json)
+      end
     end
   end
 end

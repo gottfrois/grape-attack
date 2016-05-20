@@ -7,7 +7,7 @@ module Grape
 
       attr_reader :request, :adapter, :counter
 
-      def initialize(env, adapter = ::Grape::Attack.adapter)
+      def initialize(env, adapter = ::Grape::Attack.config.moneta_adapter)
         @request = ::Grape::Attack::Request.new(env)
         @adapter = adapter
         @counter = ::Grape::Attack::Counter.new(@request, @adapter)
