@@ -10,7 +10,7 @@ module Grape
       end
 
       def moneta_adapter
-        @moneta_adapter ||= Moneta.new(adapter, expires: true, serializer: :json)
+        @moneta_adapter ||= Moneta.new(adapter, expires: true)
       end
     end
   end

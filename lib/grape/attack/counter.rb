@@ -12,7 +12,7 @@ module Grape
       def value
         @value ||= begin
           if adapter.key?(key)
-            adapter.fetch(key)
+            fetch[0]
           else
             store(0)
             0
@@ -34,16 +34,13 @@ module Grape
           # Key doesn't exists store as 1
           store(1)
         end
-
-        # Reset knowledge about value
-        remove_instance_variable(:@value)
       end
 
       def reset
         if adapter.key?(key)
-          get_raw[1]
+          fetch[1]
         else
-          ttl_in_seconds.from_now.to_i
+          ttl_in_seconds.seconds.from_now.to_i
         end
       end
 
@@ -53,25 +50,20 @@ module Grape
         "#{request.method}:#{request.path}:#{request.client_identifier}"
       end
 
-      def store(value)
-        if adapter.supports?(:create)
-          adapter.create(key, value, expires: ttl_in_seconds)
-        else
-          adapter.store(key, value, expires: ttl_in_seconds)
-        end
+      def store(value, expires = ttl_in_seconds.seconds.from_now.to_i)
+        adapter.store(key, "#{value}~#{expires}", expires: [0, expires - Time.now.to_i].max)
+
+        # Reset knowledge about value
+        remove_instance_variable(:@value) unless @value.nil?
+      end
+
+      def fetch
+        adapter.fetch(key).split('~').map(&:to_i)
       end
 
       def increment
-        current_value, expires = get_raw
-        store_raw(current_value.to_i + 1, expires)
-      end
-
-      def get_raw
-        adapter.raw.fetch(key).gsub(/[\[\]]/, '').split(',')
-      end
-
-      def store_raw(new_value, exp)
-        adapter.raw.store(key, "[#{new_value},#{exp}]")
+        current_value, expires = fetch
+        store(current_value + 1, expires)
       end
 
       def ttl_in_seconds
