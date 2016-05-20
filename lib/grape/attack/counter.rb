@@ -39,6 +39,14 @@ module Grape
         remove_instance_variable(:@value)
       end
 
+      def reset
+        if adapter.key?(key)
+          get_raw[1]
+        else
+          ttl_in_seconds.from_now.to_i
+        end
+      end
+
       private
 
       def key

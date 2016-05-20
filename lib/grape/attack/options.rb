@@ -5,7 +5,7 @@ module Grape
     class Options
       include ActiveModel::Model
 
-      attr_accessor :max, :per, :identifier, :remaining
+      attr_accessor :max, :per, :identifier, :remaining, :reset
 
       validates :max, presence: true
       validates :per, presence: true
