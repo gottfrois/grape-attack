@@ -10,17 +10,13 @@ module Grape
       end
 
       def value
-        @value ||= begin
-          adapter.get(key).to_i
-        rescue ::Grape::Attack::StoreError
-          1
-        end
+        fetch[0]
       end
 
       def update
         adapter.atomically do
-          adapter.incr(key)
-          adapter.expire(key, ttl_in_seconds)
+          value, exp = fetch
+          store(value + 1, exp)
         end
       rescue ::Grape::Attack::StoreError
       end
@@ -29,6 +25,22 @@ module Grape
 
       def key
         "#{request.method}:#{request.path}:#{request.client_identifier}"
+      end
+
+      def store(value, exp)
+        adapter.atomically do
+          adapter.set(key, "#{value}~#{exp}")
+          adapter.expire(key, [0, exp - Time.now.to_i].max)
+        end
+        remove_instance_variable(:@raw_value) unless @raw_value.nil?
+      end
+
+      def fetch
+        @raw_value ||= begin
+          adapter.get(key).split('~').map(&:to_i)
+        rescue ::Grape::Attack::StoreError, NoMethodError
+          [0, ttl_in_seconds.seconds.from_now.to_i]
+        end
       end
 
       def ttl_in_seconds
