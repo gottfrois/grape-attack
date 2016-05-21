@@ -17,6 +17,12 @@ module Grape
           end
         end
 
+        def set(key, value)
+          with_custom_exception do
+            broker.set(key, value)
+          end
+        end
+
         def incr(key)
           with_custom_exception do
             broker.incr(key)

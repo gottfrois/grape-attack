@@ -13,6 +13,10 @@ module Grape
           data[key]
         end
 
+        def set(key, value)
+          data[key] = value
+        end
+
         def incr(key)
           data[key] ||= 0
           data[key] += 1
