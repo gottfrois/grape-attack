@@ -10,7 +10,14 @@ module Grape
       end
 
       def value
-        fetch[0]
+        val, exp = fetch
+
+        if exp > Time.now.to_i
+          val
+        else
+          store(0, ttl_in_seconds.seconds.from_now.to_i)
+          fetch[0]
+        end
       end
 
       def reset_at
