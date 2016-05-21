@@ -44,7 +44,8 @@ module Grape
       end
 
       def set_rate_limit_headers
-        request.context.route_setting(:throttle)[:remaining] = [0, max_requests_allowed - (counter.value + 1)].max
+        request.context.route_setting(:throttle)[:remaining] = [0, max_requests_allowed - counter.value].max
+        request.context.route_setting(:throttle)[:reset_at] = [Time.now.to_i, counter.reset_at].max
       end
 
       def max_requests_allowed

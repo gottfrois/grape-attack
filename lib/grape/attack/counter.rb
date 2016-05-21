@@ -13,6 +13,10 @@ module Grape
         fetch[0]
       end
 
+      def reset_at
+        fetch[1]
+      end
+
       def update
         adapter.atomically do
           value, exp = fetch

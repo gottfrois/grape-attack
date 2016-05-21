@@ -6,7 +6,7 @@ module Grape
       include ActiveModel::Model
       include ActiveModel::Validations
 
-      attr_accessor :max, :per, :identifier, :remaining
+      attr_accessor :max, :per, :identifier, :remaining, :reset_at
 
       class ProcOrNumberValidator < ActiveModel::EachValidator
         def validate_each(record, attribute, value)
