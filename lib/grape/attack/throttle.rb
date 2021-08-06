@@ -15,7 +15,7 @@ module Grape
         return unless request.throttle?
 
         header('X-RateLimit-Limit', request.context.route_setting(:throttle)[:max].to_s)
-        header('X-RateLimit-Reset', request.context.route_setting(:throttle)[:per].from_now.to_i.to_s)
+        header('X-RateLimit-Reset', request.context.route_setting(:throttle)[:per].to_s)
         header('X-RateLimit-Remaining', request.context.route_setting(:throttle)[:remaining].to_s)
 
         @app_response
