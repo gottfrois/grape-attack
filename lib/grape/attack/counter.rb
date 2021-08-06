@@ -28,6 +28,7 @@ module Grape
       private
 
       def key
+        return "#{request.client_identifier}" if request.throttle_options.global_throttling
         "#{request.method}:#{request.path}:#{request.client_identifier}"
       end
 
