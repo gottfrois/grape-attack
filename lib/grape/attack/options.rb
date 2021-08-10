@@ -39,7 +39,8 @@ module Grape
       end
 
       def global_throttling
-        @global_throttling || ::Grape::Attack.config.global_throttling
+        ::Grape::Attack.config.global_throttling if @global_throttling.nil?
+        @global_throttling
       end
 
     end
