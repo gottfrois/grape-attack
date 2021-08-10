@@ -17,8 +17,8 @@ module Grape
         end
       end
 
-      validates :max, proc_or_number: true, unless: :global_throttling
-      validates :per, proc_or_number: true, unless: :global_throttling
+      validates :max, proc_or_number: true, unless: global_throttling
+      validates :per, proc_or_number: true, unless: global_throttling
 
       def identifier
         @identifier || Proc.new {}
@@ -39,8 +39,7 @@ module Grape
       end
 
       def global_throttling
-        return ::Grape::Attack.config.global_throttling unless @global_throttling
-        @global_throttling
+        @global_throttling || ::Grape::Attack.config.global_throttling
       end
 
     end
